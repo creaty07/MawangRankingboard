@@ -53,11 +53,11 @@
     <form id="recordForm">
       <h2>기록 추가</h2>
 
-      <label for="userId">User ID</label>
+      <label for="userId">이름</label>
       <input type="text" id="userId" required />
 
-      <label for="score">Score</label>
-      <input type="number" id="score" required />
+      <label for="score">점수</label>
+      <input type="number" id="score" value="1" required />
 
       <button type="submit">추가</button>
     </form>
@@ -68,25 +68,24 @@
         .addEventListener("submit", async function (e) {
           e.preventDefault();
 
-          const data = {
-            action: "addRecord",
-            userId: document.getElementById("userId").value,
-            score: Number(document.getElementById("score").value),
-          };
+          const userId = document.getElementById("userId").value;
+          const score = document.getElementById("score").value;
 
-          const response = await fetch(
-            "https://script.google.com/macros/s/AKfycbzP2ISTekC2lu7Lq2Yhl3r_zpwsLwvKWoElO8fLhUoLEabSyMWfwBb6AIoqyCYYiXf1/exec",
-            {
-              method: "POST",
-              body: JSON.stringify(data),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
+          const url = new URL(
+            "https://script.google.com/macros/s/AKfycbzrZq_ZsQrzF_77mhoo67q95AYPjWp267CbXuhZ00iDexMxtCIROXnvlccoB7jkNrlx/exec"
           );
+          url.searchParams.append("mode", "addRecord");
+          url.searchParams.append("userId", userId);
+          url.searchParams.append("score", score);
 
-          const result = await response.json();
-          alert(result.message || "기록이 추가되었습니다!");
+          try {
+            const response = await fetch(url);
+            const result = await response.json();
+            alert(result.message || "기록이 추가되었습니다!");
+          } catch (err) {
+            alert("기록 추가 중 오류 발생!");
+            console.error(err);
+          }
         });
     </script>
   </body>
