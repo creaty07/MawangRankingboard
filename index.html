@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>출석 랭킹</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        padding: 40px;
+        max-width: 600px;
+        margin: auto;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .ranking-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #ccc;
+        font-size: 18px;
+      }
+      .ranking-item span {
+        display: inline-block;
+        min-width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🔥 출석 랭킹 🔥</h1>
+    <div id="ranking-list">
+      <!-- 여기 JS로 항목이 들어감 -->
+    </div>
+
+    <script>
+      fetch(
+        "https://script.google.com/macros/s/AKfycbz-NxEUtvy81DTUcQcWdYUZUs_QbE93V-arLdIBcGB4ySEBM52AkjaWyGWe7KfJzllW/exec"
+      ) // 여기에 네 실제 Apps Script URL 넣기
+        .then((res) => res.json())
+        .then((data) => {
+          const container = document.getElementById("ranking-list");
+
+          // 점수 기준 내림차순 정렬 (이미 시트에서 정렬돼 있으면 이거 생략해도 됨)
+          data.sort((a, b) => b["점수"] - a["점수"]);
+
+          data.forEach((item, index) => {
+            const div = document.createElement("div");
+            div.className = "ranking-item";
+            div.innerHTML = `<span>${index + 1}위</span> ${item["이름"]} - ${
+              item["점수"]
+            }점 - ${item["출석일"]}`;
+            container.appendChild(div);
+          });
+        })
+        .catch((error) => {
+          console.error("랭킹 데이터 로드 실패:", error);
+          document.getElementById("ranking-list").innerHTML =
+            "<p>랭킹 데이터를 불러오지 못했어요 😢</p>";
+        });
+    </script>
+  </body>
+</html>
